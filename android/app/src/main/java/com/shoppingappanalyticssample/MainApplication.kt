@@ -1,4 +1,4 @@
-package com.shoppingappanalyticssample
+package com.appsflyersampleapp
 
 import android.app.Application
 import com.facebook.react.PackageList

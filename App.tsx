@@ -1,117 +1,59 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect, useState, createContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { View, StyleSheet } from 'react-native';
+import CartIcon from './src/components/CartIcon';
+import ProfileIcon from './src/components/ProfileIcon';
+import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import appsFlyer from 'react-native-appsflyer';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// Create a Context to Share SDK State
+export const AppsFlyerContext = createContext({ initialized: false });
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App: React.FC = () => {
+  const [isAppsFlyerInitialized, setAppsFlyerInitialized] = useState(false);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  useEffect(() => {
+    const options = {
+      isDebug: true,
+      devKey: 'RMscjivqfqLG2jqKyckdoU',
+      onInstallConversionDataListener: true,
+      onDeepLinkListener: true,
+      timeToWaitForATTUserAuthorization: 10,
+      manualStart: false,
+    };
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    // Initialize AppsFlyer SDK
+    appsFlyer.initSdk(
+      options,
+      (result) => {
+        console.log('AppsFlyer SDK initialized:', result);
+        setAppsFlyerInitialized(true); // Update state on success
+      },
+      (error) => {
+        console.error('AppsFlyer SDK initialization error:', error);
+      }
+    );
+  }, []);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <AppsFlyerContext.Provider value={{ initialized: isAppsFlyerInitialized }}>
+      <NavigationContainer>
+        <View style={styles.topBar}>
+          <ProfileIcon />
+          <CartIcon itemCount={3} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <BottomTabNavigator />
+      </NavigationContainer>
+    </AppsFlyerContext.Provider>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#f8f8f8',
   },
 });
 

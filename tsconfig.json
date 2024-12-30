@@ -1,3 +1,7 @@
 {
+  "include": [
+    "src",
+    "svg.d.ts" // Ensure this file is included
+  ],
   "extends": "@react-native/typescript-config/tsconfig.json"
 }

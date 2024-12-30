@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.shoppingappanalyticssample"
+    namespace "com.appsflyersampleapp"
     defaultConfig {
-        applicationId "com.shoppingappanalyticssample"
+        applicationId "com.appsflyersampleapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -109,6 +109,7 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation project(':react-native-appsflyer')
     implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
